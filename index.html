@@ -182,46 +182,6 @@
         window.open(streamUrl, '_blank');
         }
 
-/*
-        // --- HLS Player Logic ---
-        let hls = null;
-
-        window.playStream = function(streamUrl, channelName) {
-            const modal = document.getElementById('videoModal');
-            const video = document.getElementById('streamPlayer');
-            document.title = `Watching: ${channelName}`;
-            modal.style.display = 'flex';
-
-            if (Hls.isSupported()) {
-                if (hls) hls.destroy(); // Destroy previous instance
-                hls = new Hls();
-                hls.loadSource(streamUrl);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(e => console.log("Auto-play blocked")));
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = streamUrl;
-                video.addEventListener('loadedmetadata', () => video.play());
-            } else {
-                alert("Your browser does not support HLS playback.");
-                closeModal();
-            }
-        };
-        
-
-        window.closeModal = function() {
-            const modal = document.getElementById('videoModal');
-            const video = document.getElementById('streamPlayer');
-            video.pause();
-            video.src = '';
-            if (hls) { hls.destroy(); hls = null; }
-            modal.style.display = 'none';
-            document.title = 'My TV Channels';
-        };
-
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-        */
-
         // Initial Load
         document.addEventListener('DOMContentLoaded', renderChannels);
     </script>

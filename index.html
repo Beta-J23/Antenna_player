@@ -142,8 +142,8 @@
         const url = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_italy.m3u8'; 
         
         const parsedData = await ParseM3U(url);
-        // Extract the 'items' array from the parsed object
-        const newChannelsRaw = parsedData.items; 
+        // The library returns an object. The array of channels is in 'parsedData.items'
+        const newChannelsRaw = parsedData.items; // <-- This is the fix
 
         const existing = getChannels();
         const existingUrls = new Set(existing.map(c => c.stream));
@@ -166,13 +166,14 @@
             alert(`Successfully added ${transformed.length} new channels!`);
             renderChannels();
         }
-    } catch (error) {
-        console.error(error);
-        alert("Failed to fetch channels. Check the console for details.");
-    } finally {
-        loadingMsg.style.display = 'none';
-    }
-};
+        } catch (error) {
+            console.error(error);
+            alert("Failed to fetch channels. Check the console for details.");
+        } finally {
+            loadingMsg.style.display = 'none';
+        }
+        };
+
 
         // --- HLS Player Logic ---
         let hls = null;

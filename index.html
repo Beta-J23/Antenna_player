@@ -83,6 +83,7 @@
             }
         }
 
+        
         async function fetchBulkChannels() {
             const targetUrl = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_italy.m3u8';
             const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
@@ -116,7 +117,7 @@
             } catch(e) { alert('Fetch failed. Check console.'); console.error(e); }
         }
         
-        
+
         document.addEventListener('DOMContentLoaded', renderChannels);
     </script>
 </body>

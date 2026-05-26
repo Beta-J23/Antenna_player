@@ -79,29 +79,32 @@
 
         // --- UI Rendering ---
         function renderChannels() {
-            const grid = document.getElementById('channel-grid');
-            const channels = getChannels();
-            grid.innerHTML = '';
+    const grid = document.getElementById('channel-grid');
+    const channels = getChannels();
+    grid.innerHTML = '';
 
-            if (channels.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">No channels added yet. Use "Add Manual" or "Fetch Free-TV Channels".</p>';
-                return;
-            }
+    if (channels.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">No channels added yet.</p>';
+        return;
+    }
 
-            channels.forEach(channel => {
-                const card = document.createElement('div');
-                card.className = 'channel-card';
-                const logoSrc = channel.logo && channel.logo.trim() !== '' ? channel.logo : 'https://via.placeholder.com/100?text=TV';
-                
-                card.innerHTML = `
-                    <button class="delete-btn" onclick="event.stopPropagation(); deleteChannel(${channel.id})">X</button>
-                    <img src="${logoSrc}" alt="${channel.name}" class="channel-logo" onerror="this.src='https://via.placeholder.com/100?text=Error'">
-                    <div class="channel-name">${channel.name}</div>
-                `;
-                card.addEventListener('click', () => playStream(channel.stream, channel.name));
-                grid.appendChild(card);
-            });
-        }
+    channels.forEach(channel => {
+        const card = document.createElement('div');
+        card.className = 'channel-card';
+        
+        // Use placehold.co instead of via.placeholder.com
+        const logoSrc = channel.logo && channel.logo.trim() !== '' ? channel.logo : 'https://placehold.co/100x100/333/FFF?text=TV';
+        
+        card.innerHTML = `
+            <button class="delete-btn" onclick="event.stopPropagation(); deleteChannel(${channel.id})">X</button>
+            <img src="${logoSrc}" alt="${channel.name}" class="channel-logo" onerror="this.src='https://placehold.co/100x100/555/FFF?text=Error'">
+            <div class="channel-name">${channel.name}</div>
+        `;
+
+        card.addEventListener('click', () => playStream(channel.stream, channel.name));
+        grid.appendChild(card);
+    });
+}
 
         // --- Manual Add/Delete ---
         window.addChannel = function() {

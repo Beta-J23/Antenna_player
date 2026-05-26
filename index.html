@@ -134,48 +134,45 @@
             renderChannels();
         };
 
-        // --- Bulk Fetch Logic (The New Feature) ---
         window.fetchBulkChannels = async function() {
-            const loadingMsg = document.getElementById('loading-msg');
-            loadingMsg.style.display = 'block';
-            
-            try {
-                // Fetching the USA playlist from Free-TV/IPTV
-                //const url = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u'; 
-                const url = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_italy.m3u8';
-                // Note: If 'playlist.m3u' is too large or blocked, try specific country files like 'usa.m3u'
-                
-                const newChannelsRaw = await ParseM3U(url);
-                
-                const existing = getChannels();
-                const existingUrls = new Set(existing.map(c => c.stream));
+    const loadingMsg = document.getElementById('loading-msg');
+    loadingMsg.style.display = 'block';
+    
+    try {
+        const url = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_italy.m3u8'; 
+        
+        const parsedData = await ParseM3U(url);
+        // Extract the 'items' array from the parsed object
+        const newChannelsRaw = parsedData.items; 
 
-                // Transform and Filter
-                const transformed = newChannelsRaw
-                    .filter(ch => ch.url && ch.name) // Ensure valid data
-                    .map(ch => ({
-                        name: ch.name,
-                        logo: ch.tvg?.logo || '', 
-                        stream: ch.url,
-                        id: Date.now() + Math.random()
-                    }))
-                    .filter(ch => !existingUrls.has(ch.stream)); // Avoid duplicates
+        const existing = getChannels();
+        const existingUrls = new Set(existing.map(c => c.stream));
 
-                if (transformed.length === 0) {
-                    alert("No new channels found or all are duplicates.");
-                } else {
-                    const updated = [...existing, ...transformed];
-                    saveChannels(updated);
-                    alert(`Successfully added ${transformed.length} new channels!`);
-                    renderChannels();
-                }
-            } catch (error) {
-                console.error(error);
-                alert("Failed to fetch channels. The source might be down or blocking requests (CORS). Try again later.");
-            } finally {
-                loadingMsg.style.display = 'none';
-            }
-        };
+        const transformed = newChannelsRaw 
+            .filter(ch => ch.url && ch.name) 
+            .map(ch => ({
+                name: ch.name,
+                logo: ch.tvg?.logo || '', 
+                stream: ch.url,
+                id: Date.now() + Math.random()
+            }))
+            .filter(ch => !existingUrls.has(ch.stream));
+
+        if (transformed.length === 0) {
+            alert("No new channels found or all are duplicates.");
+        } else {
+            const updated = [...existing, ...transformed];
+            saveChannels(updated);
+            alert(`Successfully added ${transformed.length} new channels!`);
+            renderChannels();
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Failed to fetch channels. Check the console for details.");
+    } finally {
+        loadingMsg.style.display = 'none';
+    }
+};
 
         // --- HLS Player Logic ---
         let hls = null;

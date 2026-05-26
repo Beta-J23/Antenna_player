@@ -139,11 +139,12 @@
     loadingMsg.style.display = 'block';
     
     try {
-        const url = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_italy.m3u8'; 
+        const targetUrl = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_italy.m3u8';
+        // Use a CORS proxy to bypass the browser restriction
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
         
-        const parsedData = await ParseM3U(url);
-        // The library returns an object. The array of channels is in 'parsedData.items'
-        const newChannelsRaw = parsedData.items; // <-- This is the fix
+        const parsedData = await ParseM3U(proxyUrl);
+        const newChannelsRaw = parsedData.items || [];
 
         const existing = getChannels();
         const existingUrls = new Set(existing.map(c => c.stream));
@@ -166,14 +167,13 @@
             alert(`Successfully added ${transformed.length} new channels!`);
             renderChannels();
         }
-        } catch (error) {
-            console.error(error);
-            alert("Failed to fetch channels. Check the console for details.");
-        } finally {
-            loadingMsg.style.display = 'none';
-        }
-        };
-
+    } catch (error) {
+        console.error(error);
+        alert("Failed to fetch channels. The source might be down or blocking requests.");
+    } finally {
+        loadingMsg.style.display = 'none';
+    }
+};
 
         // --- HLS Player Logic ---
         let hls = null;
